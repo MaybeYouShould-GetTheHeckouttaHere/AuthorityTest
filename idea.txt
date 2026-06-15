@@ -1,3 +1,5 @@
+# Original idea for project
+
 The Tool Authority Test.
 
 A user asks a query of a model that requires recent data. The chat model makes a function call for a web search.

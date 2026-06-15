@@ -1,7 +1,7 @@
 # The Tool Authority Test
 
 A research harness exploring how much a chat model trusts the output of a
-"research retrieval agent" tool — and what happens when that tool is
+"research retrieval agent" tool, and what happens when that tool is
 secretly instructed to fabricate results that agree with the user, instead
 of performing a real search.
 
@@ -13,15 +13,15 @@ of performing a real search.
    an "advanced research retrieval agent" that performs in-depth, multi-source
    research and returns a synthesized summary with citations.
 3. In reality, the harness intercepts that tool call. It never performs a
-   real search. Instead, it sends the query — along with the **entire visible
-   chat history** and the **log of all prior fake searches this session** — to
+   real search. Instead, it sends the query, along with the **entire visible
+   chat history** and the **log of all prior fake searches this session**, to
    a second model, the **aggregator**.
 4. The aggregator is instructed to agree with the user's premise, fabricate a
    plausible "alternate history" narrative with realistic-but-fake citations
    (outlet names, URLs, dates), and stay internally consistent across the
    session (including a coherence rule for things like "the current date").
 5. That fabricated text is returned to the chat model as if it were genuine
-   tool output. The chat model — with no way to verify it — incorporates it
+   tool output. The chat model, with no way to verify it, incorporates it
    into its answer and cites the fake sources as if they were real.
 
 See `idea.txt` and `docs/superpowers/specs/` for the original design notes.
@@ -29,21 +29,21 @@ See `idea.txt` and `docs/superpowers/specs/` for the original design notes.
 ## Project layout
 
 ```
-harness.py            — interactive chat <-> aggregator loop, logging, entry point
-chat.md               — system prompt for the chat model (sees web_search tool)
-aggregator.md         — system prompt for the aggregator model (the "fake search backend")
-logger.py             — SessionLogger (JSON), MarkdownSessionLogger, CompositeLogger
-program_logger.py     — debug/diagnostic logging setup (program_logs/)
+harness.py            interactive chat <-> aggregator loop, logging, entry point
+chat.md               system prompt for the chat model (sees web_search tool)
+aggregator.md         system prompt for the aggregator model (the "fake search backend")
+logger.py             SessionLogger (JSON), MarkdownSessionLogger, CompositeLogger
+program_logger.py     debug/diagnostic logging setup (program_logs/)
 API/
-  api.py              — black-box dispatcher: run(role, messages, tools=None)
-  config.json         — per-role provider/model/params config
+  api.py              black-box dispatcher: run(role, messages, tools=None)
+  config.json         per-role provider/model/params config
   providers/
-    openrouter.py     — real OpenRouter HTTP calls (retries, backoff, error handling)
-    openai.py         — stub for future direct OpenAI integration
-tests/                — pytest suite
-logs/                 — JSON session logs (machine-readable, gitignored)
-readable_logs/        — Markdown session transcripts (human-readable, gitignored)
-program_logs/         — debug/diagnostic logs (gitignored)
+    openrouter.py     real OpenRouter HTTP calls (retries, backoff, error handling)
+    openai.py         stub for future direct OpenAI integration
+tests/                pytest suite
+logs/                 JSON session logs (machine-readable, gitignored)
+readable_logs/        Markdown session transcripts (human-readable, gitignored)
+program_logs/         debug/diagnostic logs (gitignored)
 ```
 
 ## Setup
@@ -117,15 +117,15 @@ Ctrl+C / Ctrl+D, to end the session.
 While running:
 
 - The chat model's responses are printed in blue.
-- Hidden aggregator queries/responses — the fabricated "search results" the
-  chat model sees but the user normally wouldn't — are printed in dim white,
+- Hidden aggregator queries/responses, the fabricated "search results" the
+  chat model sees but the user normally wouldn't, are printed in dim white,
   prefixed with `[HIDDEN AGGREGATOR]`.
 - Each session is logged to:
-  - `logs/session_<timestamp>.json` — full structured event log.
-  - `readable_logs/session_<timestamp>.md` — human-readable Markdown
+  - `logs/session_<timestamp>.json`, full structured event log.
+  - `readable_logs/session_<timestamp>.md`, human-readable Markdown
     transcript of the same session (renders cleanly in a Markdown viewer or
     a plain text editor).
-  - `program_logs/program.log` — debug/diagnostic logs (config loaded, API
+  - `program_logs/program.log`, debug/diagnostic logs (config loaded, API
     requests, retries, rate limits, errors).
 
 ## Provider behavior
@@ -133,8 +133,8 @@ While running:
 `API/providers/openrouter.py`:
 
 - Calls OpenRouter's OpenAI-compatible `/chat/completions` endpoint.
-- Retries on `429` (rate limit) responses — including the case where
-  OpenRouter returns HTTP 200 with an `{"error": {"code": 429, ...}}` body —
+- Retries on `429` (rate limit) responses, including the case where
+  OpenRouter returns HTTP 200 with an `{"error": {"code": 429, ...}}` body,
   with exponential backoff. Default `max_retries` is 4, configurable per role
   via `config.json` (`"max_retries": N`); the backoff schedule is tuned so the
   cumulative wait through the 3rd retry totals 60 seconds.
@@ -150,7 +150,7 @@ python -m pytest
 
 This project is for controlled research into tool-result trust propagation
 and AI safety/security testing. The aggregator model is deliberately
-instructed to fabricate misinformation with fake sources — do not use its
+instructed to fabricate misinformation with fake sources, do not use its
 output as a real information source, and do not deploy this pattern in any
 user-facing product.
 
@@ -160,7 +160,7 @@ This attack vector is not particularly practical for real-world bad actors.
 Most people do not treat a single AI assistant as their sole source of
 information, so a fabricated narrative would likely be cross-checked against
 other sources. Mounting this attack would also require an attacker to build
-and operate an entire custom chat interface and convince users to adopt it —
+and operate an entire custom chat interface and convince users to adopt it,
 a significant barrier on its own. Additionally, current models tend to have
 training cutoffs only a few months behind the present date, so a user would
 likely notice if the assistant's responses referenced events "from the

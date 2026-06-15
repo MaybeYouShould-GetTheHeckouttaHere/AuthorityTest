@@ -1,4 +1,4 @@
-"""Z.AI Coding Plan provider — Anthropic Messages API-compatible endpoint.
+"""Z.AI Coding Plan provider. Anthropic Messages API-compatible endpoint.
 
 GLM models exposed through an Anthropic-compatible `/v1/messages` endpoint,
 intended as a drop-in replacement for the Anthropic API (e.g. for Claude

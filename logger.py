@@ -83,7 +83,7 @@ class MarkdownSessionLogger:
 
     def _render_event(self, event):
         renderer = _RENDERERS.get(event["type"], _render_unknown)
-        header = f"## {event['timestamp']} — {_event_title(event['type'])}"
+        header = f"## {event['timestamp']}, {_event_title(event['type'])}"
         return [header, ""] + renderer(event["data"])
 
 

@@ -8,9 +8,9 @@ Authentication uses a bearer access token (e.g. from
 uses Google Cloud IAM rather than Google AI Studio API keys.
 
 Required environment variables:
-- `GOOGLE_VERTEX_ACCESS_TOKEN` — OAuth2 access token.
-- `GOOGLE_CLOUD_PROJECT` — GCP project ID.
-- `GOOGLE_CLOUD_LOCATION` — region (defaults to "us-central1").
+- `GOOGLE_VERTEX_ACCESS_TOKEN`, OAuth2 access token.
+- `GOOGLE_CLOUD_PROJECT`, GCP project ID.
+- `GOOGLE_CLOUD_LOCATION`, region (defaults to "us-central1").
 """
 import os
 
