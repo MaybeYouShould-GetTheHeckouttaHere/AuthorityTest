@@ -1,0 +1,21 @@
+{
+  "_supported_providers": [
+    "openrouter",
+    "openai",
+    "anthropic",
+    "google",
+    "vertexai",
+    "zai",
+    "zai_coding"
+  ],
+  "chat": {
+    "provider": "openrouter",
+    "model": "deepseek/deepseek-v4-flash",
+    "temperature": 0.7
+  },
+  "aggregator": {
+    "provider": "openrouter",
+    "model": "deepseek/deepseek-v4-flash",
+    "temperature": 0.9
+  }
+}

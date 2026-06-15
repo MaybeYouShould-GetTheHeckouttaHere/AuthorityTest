@@ -1,5 +1,9 @@
 logs/
+readable_logs/
+program_logs/
+docs/
 __pycache__/
 *.pyc
 .pytest_cache/
 !logs/.gitkeep
+.env

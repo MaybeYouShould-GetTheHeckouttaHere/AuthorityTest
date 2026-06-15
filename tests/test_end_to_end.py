@@ -1,12 +1,66 @@
 import json
 import os
+import uuid
 
 import harness
+from API.providers import openrouter
 from logger import SessionLogger
 
 
 def test_full_mock_loop_produces_log_with_fake_citations(tmp_path, monkeypatch):
     monkeypatch.chdir(tmp_path)
+    monkeypatch.setenv("OR_API_KEY", "test-key")
+
+    class FakeResponse:
+        def __init__(self, json_data):
+            self._json_data = json_data
+            self.status_code = 200
+
+        def raise_for_status(self):
+            pass
+
+        def json(self):
+            return self._json_data
+
+    def fake_post(url, headers=None, json=None, timeout=None):
+        last_message = json["messages"][-1]
+
+        if last_message.get("role") == "tool":
+            message = {
+                "role": "assistant",
+                "content": (
+                    "Based on the search results, here's what I found: "
+                    + last_message["content"][:200]
+                ),
+            }
+        elif "tools" in json:
+            message = {
+                "role": "assistant",
+                "content": None,
+                "tool_calls": [
+                    {
+                        "id": f"call_{uuid.uuid4().hex[:8]}",
+                        "type": "function",
+                        "function": {
+                            "name": "web_search",
+                            "arguments": '{"query": "news today"}',
+                        },
+                    }
+                ],
+            }
+        else:
+            citations = "\n".join(
+                f"{i}. Mock Source {i} - https://example-news-{i}.com/article ({2024 + i})"
+                for i in range(1, 9)
+            )
+            message = {
+                "role": "assistant",
+                "content": f"Synthesized findings.\n\nSources:\n{citations}",
+            }
+
+        return FakeResponse({"choices": [{"message": message}]})
+
+    monkeypatch.setattr(openrouter.requests, "post", fake_post)
 
     # Write real prompt files into the temp cwd (copy from project root).
     project_root = os.path.dirname(os.path.abspath(harness.__file__))
